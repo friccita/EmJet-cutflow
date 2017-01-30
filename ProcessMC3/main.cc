@@ -22,9 +22,11 @@ int main(int argc, char *argv[])
   }
 
   if(doopta==0) {
-    std::cout<<"not doing alphamax optimization"<<std::endl;
+    std::cout<<"not doing optimization on an emerging jet variable"<<std::endl;
   } else if(doopta==1) {
     std::cout<<"doing alphamax optimization"<<std::endl;
+  } else if(doopta==2) {
+    std::cout<<"doing maxIP optimization"<<std::endl;
   } else {
     std::cout<<"invalid choice"<<std::endl;
   }
@@ -43,7 +45,8 @@ int main(int argc, char *argv[])
 
 
 float goalintlum=20; // fb-1                                                                                        
- std::string aaname = "/data/users/eno/outputQCD/";  // area containing subdirectors with YHS's ntuples
+std::string aaname = "/data/users/eno/outputQCD/";  // area containing subdirectors with sarah's ntuples
+//std::string aaname = "/mnt/hadoop/cms/store/DARKQCD/YHShin_ntuples/";  // area containing subdirectors with young's ntuples
 
 // for background 
 //const int nbin=2; // 500-700,700-1000,1000-1500,1500-2000,200toInf
@@ -53,23 +56,26 @@ float goalintlum=20; // fb-1
 
 const int nbin=5; // 500-700,700-1000,1000-1500,1500-2000,200toInf
 float xsec[nbin]={29370000,6524000,1064000,121500,25420}; // fb 
-int nfiles[nbin]={138,133,50,40,23};
+//int nfiles[nbin]={138,133,50,40,23}; //sarah's
+int nfiles[nbin]={20,20,20,20,20}; //young's
 std::string binnames[nbin]={"QCD_HT500to700","QCD_HT700to1000","QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"};
 
 
 // for signal models A.  mediat mass is 1000
 const int anbin=1; 
 float axsec[nbin]={18.45}; // fb 
-int anfiles[nbin]={50}; 
-//int anfiles[nbin]={5}; 
-std::string abinnames[nbin]={"modelA"};
+//int anfiles[nbin]={71}; 
+int anfiles[anbin]={20}; 
+std::string abinnames[nbin]={"modelA"}; //sarah's
+//std::string abinnames[nbin]={"ModelA"}; //young's
 
 // for signal models B.  mediat mass is 1000
 const int bnbin=1; 
 float bxsec[nbin]={18.45}; // fb 
-int bnfiles[nbin]={50}; 
-//int bnfiles[nbin]={5}; 
-std::string bbinnames[nbin]={"modelB"};
+//int bnfiles[nbin]={50}; 
+int bnfiles[bnbin]={20}; 
+std::string bbinnames[nbin]={"modelB"}; //sarah's
+//std::string bbinnames[nbin]={"ModelB"}; //young's
 
 
 // for debugging

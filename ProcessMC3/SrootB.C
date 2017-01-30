@@ -19,8 +19,10 @@ void SrootB()
  
   gStyle->SetOptStat(0);
  
+  TString sigprocess = "ModelB";
+
   TString canvName = "Fig_";
-  canvName += "hptdp_A_B";
+  canvName += "hptdp_" + sigprocess;
   
   if( writeExtraText ) canvName += "-prelim";
   //if( iPos%10==0 ) canvName += "-out";
@@ -86,19 +88,18 @@ void SrootB()
   lgd->SetBorderSize(0); lgd->SetTextSize(0.04); lgd->SetTextFont(62); lgd->SetFillColor(0);
 
 
-  TFile *f1 = new TFile("SumHistsQCD_bigscan_12jan17.rot");
+  TFile *f1 = new TFile("SumHistsQCD.root");
   TH1F *B_cnt = static_cast<TH1F*>(f1->Get("kcutscan")->Clone());
   int nbin = B_cnt->GetNbinsX();
   std::vector<double> BCK(nbin);
-  for(int i=0;i<nbin;i++) BCK[i]=B_cnt->GetBinContent(i);
+  for(int i=1;i<nbin+1;i++) BCK[i-1]=B_cnt->GetBinContent(i);
   f1->Close();
 
-
-
-  TFile *f2 = new TFile("SumHistsModelB_bigscan_12jan17.rot");
+  TString sigfilename = "SumHists"+ sigprocess + ".root";
+  TFile *f2 = new TFile(sigfilename);
   TH1F *S_cnt = static_cast<TH1F*>(f2->Get("kcutscan")->Clone());
   std::vector<double> SGL(nbin);
-  for(int i=0;i<nbin;i++) SGL[i]=S_cnt->GetBinContent(i);
+  for(int i=1;i<nbin+1;i++) SGL[i-1]=S_cnt->GetBinContent(i);
   f2->Close();
 
   std::vector<std::pair<int,double>> forSort(nbin);
@@ -111,15 +112,16 @@ void SrootB()
       srootb[i]=0.;
     }
     std::cout<<"cut "<<i<<" "<<SGL[i]<<" "<<BCK[i]<<" "<<srootb[i]<<std::endl;
-    forSort[i]=std::make_pair (i,srootb[i]);
+    //    forSort[i]=std::make_pair (i,srootb[i]);
   }
 
 
+  /*
   std::sort(forSort.begin(), forSort.end(), pairCompare);
   for(int i=0;i<forSort.size();i++) {
     std::cout<<i<<" "<<forSort[i].first<<" "<<forSort[i].second<<" "<<SGL[forSort[i].first]<<" "<<BCK[forSort[i].first]<<std::endl;
   }
-
+  */
   // find bin with best srootb
   int ipnt=0;
   float amax=0.;
@@ -133,12 +135,13 @@ void SrootB()
     
   // put into hist
   
-  TH1F* A_pt = new TH1F("A_pt","s root b",nbin,0,nbin);
+  TString histTitle = "s root b (" + sigprocess + ")";
+  TH1F* A_pt = new TH1F("A_pt",histTitle,nbin,0,nbin);
   for(int i=0;i<nbin;i++) A_pt->AddBinContent(i,srootb[i]);
 
-  A_pt->GetYaxis()->SetTitle("");  
+  A_pt->GetYaxis()->SetTitle("S/#sqrt(B)");  
   A_pt->GetYaxis()->SetTitleSize(0.05);  
-
+  A_pt->GetXaxis()->SetTitle("Cut set ID");
 
   A_pt->SetDirectory(0);
   A_pt->SetLineColor(3);
