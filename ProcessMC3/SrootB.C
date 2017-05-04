@@ -92,7 +92,11 @@ void SrootB()
   TH1F *B_cnt = static_cast<TH1F*>(f1->Get("kcutscan")->Clone());
   int nbin = B_cnt->GetNbinsX();
   std::vector<double> BCK(nbin);
-  for(int i=1;i<nbin+1;i++) BCK[i-1]=B_cnt->GetBinContent(i);
+  for(int i=1;i<nbin+1;i++)
+    {
+      std::cout<<"i = "<<i<<", nbin = "<<nbin<<std::endl;
+      BCK[i-1]=B_cnt->GetBinContent(i);
+    }
   f1->Close();
 
   TString sigfilename = "SumHists"+ sigprocess + ".root";
@@ -137,7 +141,7 @@ void SrootB()
   
   TString histTitle = "s root b (" + sigprocess + ")";
   TH1F* A_pt = new TH1F("A_pt",histTitle,nbin,0,nbin);
-  for(int i=0;i<nbin;i++) A_pt->AddBinContent(i,srootb[i]);
+  for(int i=1;i<nbin+1;i++) A_pt->AddBinContent(i,srootb[i-1]);
 
   A_pt->GetYaxis()->SetTitle("S/#sqrt(B)");  
   A_pt->GetYaxis()->SetTitleSize(0.05);  

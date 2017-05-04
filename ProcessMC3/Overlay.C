@@ -3,7 +3,7 @@
 #include "TH1.h"
 #include "TH1F.h"
 
-int dolog=0;
+int dolog=1;
 void Overlay() 
 { 
   TFile *f1 = new TFile("SumHistsQCD.root");
@@ -13,8 +13,14 @@ void Overlay()
  
   gStyle->SetOptStat(0);
  
+  TString histoName = "hmedianIPnm1";
+  /*Choices: hHTnm1, hpt1nm1, hpt2nm1, hpt3nm1, hpt4nm1, halphanm1, hnemnm1*/
+  //hipXYSignEJ, hmeanipXYEJ, hmeanipXYnEJ
+  //hmaxIPnm1, hmedianIPnm1, hCemfracnm1, hNemfracnm1, hntrkpt1nm1
+
   TString canvName = "Fig_";
-  canvName += "hptdp_A_B";
+  canvName += histoName;
+  canvName += "_zoom_A_B";
   
   if( writeExtraText ) canvName += "-prelim";
   //if( iPos%10==0 ) canvName += "-out";
@@ -23,7 +29,7 @@ void Overlay()
   //else if( iPos%10==3 )  canvName += "-right";
   int W = 800;
   int H = 600;
-  TCanvas* canv = new TCanvas(canvName,canvName,50,50,W,H);
+  TCanvas* canv = new TCanvas(canvName,"",50,50,W,H);
   // references for T, B, L, R
   float T = 0.08*H;
   float B = 0.12*H; 
@@ -31,6 +37,7 @@ void Overlay()
   float R = 0.04*W;
   
   //canv = new TCanvas(canvName,canvName,50,50,W,H);
+  canv->cd();
   canv->SetFillColor(0);
   canv->SetBorderMode(0);
   canv->SetFrameFillStyle(0);
@@ -68,11 +75,11 @@ void Overlay()
   
   int n_ = 2;
   
-  float x1_l = 0.9;
+  float x1_l = 0.99;
   //  float x1_l = 0.75;
   float y1_l = 0.80;
   
-  float dx_l = 0.60;
+  float dx_l = 0.30;
   float dy_l = 0.1;
   float x0_l = x1_l-dx_l;
   float y0_l = y1_l-dy_l;
@@ -80,18 +87,16 @@ void Overlay()
  TLegend *lgd = new TLegend(x0_l,y0_l,x1_l, y1_l); 
   lgd->SetBorderSize(0); lgd->SetTextSize(0.04); lgd->SetTextFont(62); lgd->SetFillColor(0);
 
-
   std::cout<<"getting first"<<std::endl;
-  TH1F *A_pt = static_cast<TH1F*>(f1->Get("hmaxipnm1")->Clone());
+  TH1F *A_pt = static_cast<TH1F*>(f1->Get(histoName)->Clone());
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
-//  A_pt->Scale(1./aaA);
+  A_pt->Scale(1./aaA);
 
   A_pt->GetYaxis()->SetTitle("number in 20 fb-1");  
   A_pt->GetYaxis()->SetTitleSize(0.05);  
-  A_pt->GetXaxis()->SetTitle("largest ipXY of tracks in jets tagged as emerging");  
+  A_pt->GetXaxis()->SetTitle("max IP (mm)");  
   A_pt->GetXaxis()->SetTitleSize(0.05);  
-
 
   A_pt->SetDirectory(0);
   A_pt->SetLineColor(3);
@@ -100,29 +105,29 @@ std::cout<<" first entries is "<<aaA<<std::endl;
   A_pt->Draw("");
 
   std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f2->Get("hmaxipnm1")->Clone());
+  TH1F *B_pt = static_cast<TH1F*>(f2->Get(histoName)->Clone());
   double aaB = B_pt->Integral();
 std::cout<<" second entries is "<<aaB<<std::endl;
-//  B_pt->Scale(1./aaB);
+  B_pt->Scale(1./aaB);
   
   B_pt->SetDirectory(0);
   B_pt->SetLineColor(2);
   B_pt->SetLineWidth(3);
   B_pt->SetStats(0);
-  
+
   B_pt->Draw("same");
 
   std::cout<<"getting third"<<std::endl;
-  TH1F *C_pt = static_cast<TH1F*>(f3->Get("hmaxipnm1")->Clone());
+  TH1F *C_pt = static_cast<TH1F*>(f3->Get(histoName)->Clone());
   double aaC = C_pt->Integral();
 std::cout<<" third entries is "<<aaC<<std::endl;
-//  C_pt->Scale(1./aaC);
+  C_pt->Scale(1./aaC);
   
   C_pt->SetDirectory(0);
   C_pt->SetLineColor(4);
   C_pt->SetLineWidth(3);
   C_pt->SetStats(0);
-  
+
   C_pt->Draw("same");
 
 
@@ -148,17 +153,17 @@ std::cout<<" third entries is "<<aaC<<std::endl;
    int iPos  = 11;
   CMS_lumi( canv, iPeriod, iPos );
   
-  canv->Update();
   canv->RedrawAxis();
+  canv->Update();
   canv->GetFrame()->Draw();
   lgd->Draw();
 
  
-  if (dolog) {
+  /*  if (dolog) {
     canv->Print(canvName+"_log.pdf",".pdf");
     canv->Print(canvName+"_log.png",".png");}
   else{ 
     canv->Print(canvName+".pdf",".pdf");
-    canv->Print(canvName+".png",".png");}
+    canv->Print(canvName+".png",".png");}*/
   return;
 }

@@ -31,7 +31,7 @@ vector<int> EMJscan(const char* inputfilename,
                float pt4cutmin, int Npt4cut,float pt4cutSS,
 		    int NemergingCutmin, int NNemergingCut, int NNemergingCutSS,
 		    float jetacut,
-		    float alphaMaxcut, float meanIPcut,
+		    float alphaMaxcut, float maxIPcut,
 float NemfracCut,float CemfracCut,int ntrk1cut) {
 
  
@@ -160,7 +160,7 @@ float NemfracCut,float CemfracCut,int ntrk1cut) {
 	    if(jet_ntrkpt1[ij]>ntrk1cut) {
 	      if((*jet_cef)[ij]<CemfracCut) {
 		n_almostem+=1;
-		if(jet_meanip[ij]>meanIPcut) { // ip cut
+		if(jet_meanip[ij]>maxIPcut) { // ip cut
 	          emerging[ij]=true;
 	          nemerging+=1;
 		//		std::cout<<" an emerging jet"<<std::endl;
